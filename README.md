@@ -8,11 +8,11 @@ enabling customer service teams to identify high-value customers and suspicious 
 dags/ 
     airline_pipeline_dag.py # Airflow DAG orchestration 
 data/ 
-    raw/ # Input data (jsonl, parquet) 
-    bronze/ # Raw ingested data 
-    silver/ # Cleaned & joined data 
-    gold/ # Business-ready insights 
-    outputs/ # Phase A outputs 
+  |-- raw/ # Input data (jsonl, parquet) 
+  |-- bronze/ # Raw ingested data 
+  |-- silver/ # Cleaned & joined data 
+  |-- gold/ # Business-ready insights 
+  |-- outputs/ # Phase A outputs 
 src/ 
     ingestion.py # Raw data ingestion 
     cleaning.py # Data cleaning & normalization 

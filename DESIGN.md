@@ -14,9 +14,9 @@ Goal is to generate a high level audit of event strram to assess data health und
 5. Generate top 5 airlines per event report.
 6. Save output as csv file.
 
-###############################################################################
-# Key challenges                                                              #
-###############################################################################
+
+# Key challenges
+
 
 ** Memory Constraint -30MB: cannot use pandas or spark since this requires loading data to memory, but file is large.
 ** Schema Inconsistency
@@ -27,9 +27,9 @@ Goal is to generate a high level audit of event strram to assess data health und
 
 This will impact in breaking aggregations.
 
-###############################################################################
-# Strategies I used to mitigate Phase A:                                      #
-###############################################################################
+
+# Strategies I used to mitigate Phase A:
+
 
 1. To address these contraints, I implemented streaming pipeline using jq, awk, sort
 2. 'jq' will help to transfrom difficult string parsing into a structured data format which makes easy to manipulate.
@@ -43,12 +43,12 @@ This will impact in breaking aggregations.
 
 
 
-# AirLine Data Processing Pipeline (Phase B)                                   #
+# AirLine Data Processing Pipeline (Phase B)
 
 
-###############################################################################
-# Overview:                                                                   #
-###############################################################################
+
+# Overview:     
+
 
 The system is reciving high volume of real time signals from airlines and internal user actions.
 
@@ -56,7 +56,7 @@ The challenge we are facing is the disconnection between the airline provided st
 leading to ambiguity in customer side and potential misuse of system.
 
 
-# Overview:                                                                    #
+# Overview:      
 
 
 Phase B evolves pipeline to a robust, scalable system using PySpark and Postgres.
@@ -64,7 +64,7 @@ The pipeline will organise data into logical layers (stage, raw, gold) to ensure
 Prioritizes high value customers during disruptions.
 
 
-# Challenges Identified:                                                       #
+# Challenges Identified:                 
 
 
 ** Schema Inconsistency
@@ -85,7 +85,7 @@ Requires Validations to ensure trust in analytics.
 conflict between airline status and user actions.
 
 
-# Arcitecture, Strategies, insights generation                                 #
+# Arcitecture, Strategies, insights generation
 
 
 ** Arcitecture
@@ -110,7 +110,7 @@ conflict between airline status and user actions.
     Prioritizing customers tier level.
 
 
-# Idempotency & Resilience                                                     #
+# Idempotency & Resilience               
 
 
 Pipeline is designed safe for retries.
@@ -120,7 +120,7 @@ Pipeline is designed safe for retries.
     Failures do not corrupt upstream data.
 
 
-# Future Enhancements                                                          #
+# Future Enhancements                    
 
 
 ** Files are now places statically in a folder, it can be enhaced dynamic file detection and run pieline.

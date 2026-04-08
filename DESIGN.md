@@ -63,7 +63,7 @@ conflict between airline status and user actions.
 # Arcitecture, Strategies, insights generation
 **Arcitecture**
 1. Created a pipeline that follows **multi layer data arcitecture:**
-2. Created 3layers->
+2. Created 3layers:
    1.  Bronze layer(**Raw Ingestion**) >
    2.  Silver layer (**Clean and structured**) >
    3.  Gold layer(**Aggregated metrics, conflict detection, suspicious behaviour**) 

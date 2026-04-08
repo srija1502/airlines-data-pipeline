@@ -41,19 +41,19 @@ def airline_pipeline():
         join_data()
 
     @task
-    def airline_metrics6():
+    def airline_metrics_task():
         airline_metrics()
 
     @task
-    def suspicious_events():
+    def suspicious_events_task():
         suspicious_events()
 
     @task
-    def priority_customers():
+    def priority_customers_task():
         high_value_customers()
 
     @task
-    def multile_bookings():
+    def multile_bookings_task():
         multiple_bookings_same_time
 
     # DAG FLOW
@@ -67,6 +67,6 @@ def airline_pipeline():
     logs >> normalise >> clean >>  joined
     bookings >> joined
 
-    joined >> [airline_metrics6(), suspicious_events(), priority_customers(), multile_bookings()]
+    joined >> [airline_metrics_task(), suspicious_events_task(), priority_customers_task(), multile_bookings_task()]
 
 dag = airline_pipeline()

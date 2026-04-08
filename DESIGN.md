@@ -18,12 +18,12 @@ Goal is to generate a high level audit of event strram to assess data health und
 # Key challenges
 
 
-** Memory Constraint -30MB: cannot use pandas or spark since this requires loading data to memory, but file is large.
-** Schema Inconsistency
+-> Memory Constraint -30MB: cannot use pandas or spark since this requires loading data to memory, but file is large.
+-> Schema Inconsistency
     The stream logs file contains inconsistent structure.
     price appears as both:
-        -> floating value
-        -> nested object {amount,currency}
+        ->  floating value
+        ->  nested object {amount,currency}
 
 This will impact in breaking aggregations.
 
@@ -59,41 +59,41 @@ Prioritizes high value customers during disruptions.
 
 
 # Challenges Identified:                 
-** Schema Inconsistency
+-> Schema Inconsistency
 The stream logs file contains inconsistent structure.
 price appears as both:
-    -> floating value
-    -> nested object {amount,currency}
+    ->  floating value
+    ->  nested object {amount,currency}
 
 This will impact in breaking downstream aggregations.
 
-** Noisy stream
+-> Noisy stream
 Observed missing or null fields(booking_id,timestamp)
 timetsamp data is in invalied format for few records.
 
 Requires Validations to ensure trust in analytics.
 
-** Behavioral Ambiguity
+-> Behavioral Ambiguity
 conflict between airline status and user actions.
 
 
 # Arcitecture, Strategies, insights generation
-** Arcitecture
+-> Arcitecture
     Created a pipeline that follows multi layer data arcitecture:
-    created 3layers-> Bronze layer(Raw Ingestion) > Silver layer (Clean and structured) > Gold layer(Aggregated metrics, conflict detection, suspicious behaviour) 
+    created 3layers->  Bronze layer(Raw Ingestion) > Silver layer (Clean and structured) > Gold layer(Aggregated metrics, conflict detection, suspicious behaviour) 
 
-** Strategy
+-> Strategy
     To maintain schema consistency and normalization
-        Handled inconsistent price format-> extract structured values.
+        Handled inconsistent price format->  extract structured values.
         Regex parsing for primitive values
     Data Validation & cleaning
         filtered Not null booking id's
                  Valid timestamp formats
         and loaded to raw layer.
 
-** Data transforming and business insight generation
+-> Data transforming and business insight generation
     Joined both bookings dataframe and log streams dataframe to know tier, region of the booking.
-    Conflicts detected-> User requesting REFUND while flight is ON_TIME
+    Conflicts detected->  User requesting REFUND while flight is ON_TIME
                          Contradictory booking actions
                          Fraud attempt possibilty, mistakenly opted refund on flight delays
                          Same user booking multiple flights on the same time can also be implemented for business insight.
@@ -105,11 +105,11 @@ Pipeline is designed safe for retries.
     Each layer is independent
     Failures do not corrupt upstream data.
 # Future Enhancements                    
--> Files are now places statically in a folder, it can be enhaced dynamic file detection and run pieline.
-** Handleing currency if currency is not given.
-** Provide business insights based on timstamp the latest booking id for the user.
-** Data quality monitoring
-** Resuable utility functions for common operations such as spark create session, standardize reads/writes and data transformations.
-** Loading all the layers data into a standard schema defined tables (PostgresSQL) which ensures downstream systems to query actionable insights.
-** Integrating Phase A logic as airflow task.
-** Identifying suspicious users who does recursive status updates.
+->  Files are now places statically in a folder, it can be enhaced dynamic file detection and run pieline.
+-> Handleing currency if currency is not given.
+-> Provide business insights based on timstamp the latest booking id for the user.
+-> Data quality monitoring
+-> Resuable utility functions for common operations such as spark create session, standardize reads/writes and data transformations.
+-> Loading all the layers data into a standard schema defined tables (PostgresSQL) which ensures downstream systems to query actionable insights.
+-> Integrating Phase A logic as airflow task.
+-> Identifying suspicious users who does recursive status updates.

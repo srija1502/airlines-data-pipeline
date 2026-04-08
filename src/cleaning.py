@@ -8,24 +8,23 @@ def clean_logs():
 
     df = spark.read.parquet("/opt/airflow/data/silver/stream_logs_normalized/")
 
-    # Convert timestamp safely (handles Z and milliseconds)
     df = df.withColumn(
         "timestamp_parsed",
-        F.to_timestamp("timestamp")
+        F.expr("try_to_timestamp(timestamp)")
     )
 
-    # Keep only if booking_id AND timestamp exist
+    bad_df = df.filter(F.col("timestamp_parsed").isNull())
+    bad_df.write.mode("overwrite") \
+        .parquet("/opt/airflow/data/silver/bad_records/")
+
     df = df.filter(
         (F.col("timestamp_parsed").isNotNull())
     )
 
-    # Replace original timestamp
     df = df.withColumn("timestamp", F.col("timestamp_parsed")) \
            .drop("timestamp_parsed")
-
-    # Optional: fill missing values instead of dropping
     df = df.fillna({
-        "booking_id": "NULL",
+        "booking_id":"NULL",
         "airline": "NULL",
         "status": "NULL",
         "action": "NULL",

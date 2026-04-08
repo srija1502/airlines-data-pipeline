@@ -13,12 +13,11 @@ def logs_ingestion():
             F.lit(run_date)
         )
     
-    df.coalesce(1).write.mode("append") \
+    df.coalesce(1).write.mode("overwrite") \
     .partitionBy("data_date") \
     .option("header", True) \
     .csv("/opt/airflow/data/bronze/stream_logs_csv/")
     spark.stop()
-
 
 def booking_ingestion():
     spark = get_spark()

@@ -8,6 +8,8 @@ def airline_metrics():
     df = spark.read.parquet("/opt/airflow/data/silver/combined/")
     run_date = datetime.now().strftime("%Y%m%d")
 
+    df = df.filter(F.col("booking_id") != "NULL")
+
     result = df.groupBy("airline").agg(
         F.count("*").alias("total_events"),
         F.sum("price_amount").alias("total_revenue")
@@ -31,8 +33,8 @@ def suspicious_events():
     spark = get_spark()
 
     df = spark.read.parquet("/opt/airflow/data/silver/combined/")
-
     run_date = datetime.now().strftime("%Y%m%d")
+    df = df.filter(F.col("booking_id") != "NULL")
 
     result = df.withColumn(
         "issue_type",
@@ -69,8 +71,8 @@ def high_value_customers():
     spark = get_spark()
 
     df = spark.read.parquet("/opt/airflow/data/silver/combined/")
-
     run_date = datetime.now().strftime("%Y%m%d")
+    df = df.filter(F.col("booking_id") != "NULL")
 
     result = df.groupBy("customer_name", "tier").agg(
         F.sum("price_amount").alias("total_spent"),
@@ -98,6 +100,7 @@ def multiple_bookings_same_time():
 
     df = spark.read.parquet("/opt/airflow/data/silver/combined/")
     run_date = datetime.now().strftime("%Y%m%d")
+    df = df.filter(F.col("booking_id") != "NULL")
 
     df = df.filter(F.col("action") == "BOOKING_CONFIRMED")\
         .filter(F.col("status").isin("ON_TIME", "DELAYED"))

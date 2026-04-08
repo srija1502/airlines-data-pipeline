@@ -17,27 +17,27 @@ def clean_logs():
     bad_df.write.mode("overwrite") \
         .parquet("/opt/airflow/data/silver/bad_records/")
 
-    df = df.filter(
+    clean_df = df.filter(
         (F.col("timestamp_parsed").isNotNull())
     )
 
-    df = df.withColumn("timestamp", F.col("timestamp_parsed")) \
+    clean_df = clean_df.withColumn("timestamp", F.col("timestamp_parsed")) \
            .drop("timestamp_parsed")
-    df = df.fillna({
-        "booking_id":"NULL",
-        "airline": "NULL",
-        "status": "NULL",
-        "action": "NULL",
-        "price_amount": 0
-    })
+    clean_df_final = clean_df.fillna({
+                "booking_id":"NULL",
+                "airline": "NULL",
+                "status": "NULL",
+                "action": "NULL",
+                "price_amount": 0
+            })
 
     # Write parquet
-    df.write.mode("overwrite").parquet("/opt/airflow/data/silver/stream_logs_clean/")
+    clean_df_final.write.mode("overwrite").parquet("/opt/airflow/data/silver/stream_logs_clean/")
 
     # Write CSV
-    df = df.withColumn("data_date", F.lit(run_date))
+    clean_df_final_csv = clean_df_final.withColumn("data_date", F.lit(run_date))
 
-    df.coalesce(1).write.mode("overwrite") \
+    clean_df_final_csv.coalesce(1).write.mode("overwrite") \
         .partitionBy("data_date") \
         .option("header", True) \
         .csv("/opt/airflow/data/silver/stream_logs_clean_csv/")

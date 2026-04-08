@@ -53,14 +53,26 @@ def suspicious_events():
         )
     ).filter(F.col("issue_type").isNotNull())
 
-    result.write.mode("overwrite").parquet("/opt/airflow/data/gold/suspicious/")
+    final_result = result.select(
+        "booking_id",
+        "action",
+        "airline",
+        "status",
+        "price_amount",
+        "currency",
+        "customer_name",
+        "tier",
+        "region",
+        "issue_type"
+    )
+    final_result.write.mode("overwrite").parquet("/opt/airflow/data/gold/suspicious/")
 
-    result = result.withColumn(
+    final_result = final_result.withColumn(
         "data_date",
         F.lit(run_date)
     )
 
-    result.coalesce(1).write.mode("overwrite") \
+    final_result.coalesce(1).write.mode("overwrite") \
     .partitionBy("data_date") \
     .option("header", True) \
     .csv("/opt/airflow/data/gold/suspicious_csv/")

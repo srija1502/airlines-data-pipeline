@@ -13,35 +13,41 @@ def normalize_logs():
         StructField("amount", DoubleType(), True),
         StructField("currency", StringType(), True)
     ])
-    df = df.withColumn("price", F.col("price").cast("string"))
-    df = df.withColumn(
-        "price_struct",
-        F.from_json("price", price_schema)
-    )
 
+    df = df.withColumn("price_raw", F.col("price").cast("string"))
+    df = df.withColumn("is_json", F.col("price_raw").contains("{"))
     df = df.withColumn(
         "price_amount",
         F.when(
-            F.col("price_struct").isNotNull(),
-            F.col("price_struct.amount")
+            F.col("is_json"), 
+            F.from_json("price_raw", price_schema).getItem("amount")
         ).otherwise(
-            F.regexp_extract("price", r'(\d+\.\d+)', 1).cast("double")
+            # Handles simple numeric strings directly
+            F.col("price_raw").cast("double")
         )
     )
-
-    df = df.withColumn(
+    staged_df = df.withColumn(
         "currency",
         F.when(
-            F.col("price_struct").isNotNull(),
-            F.col("price_struct.currency")
-        ).otherwise(F.lit(""))
-    ).drop("price_struct")
+            F.col("is_json"), 
+            F.from_json("price_raw", price_schema).getItem("currency")
+        ).otherwise(F.lit("")) # Or your default currency
+    )
 
-    df.write.mode("overwrite").parquet("/opt/airflow/data/silver/stream_logs_normalized/")
+    staged_df_final = staged_df.select(
+        "action",
+        "airline",
+        "booking_id",
+        "event_id",
+        "status",
+        "timestamp",
+        "price_amount",
+        "currency"
+    )
 
-    df = df.withColumn("data_date", F.lit(run_date))
-
-    df.coalesce(1).write.mode("overwrite") \
+    staged_df_final.write.mode("overwrite").parquet("/opt/airflow/data/silver/stream_logs_normalized/")
+    staged_df_final_csv = staged_df_final.withColumn("data_date", F.lit(run_date))
+    staged_df_final_csv.coalesce(1).write.mode("overwrite") \
         .partitionBy("data_date") \
         .option("header", True) \
         .csv("/opt/airflow/data/silver/stream_logs_normalized_csv/")

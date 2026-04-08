@@ -10,16 +10,16 @@ def join_data():
     bookings = spark.read.parquet("/opt/airflow/data/bronze/bookings_master/")
 
     run_date = datetime.now().strftime("%Y%m%d")
-    df = logs.join(bookings, "booking_id", "left")
+    combined_df = logs.join(bookings, "booking_id", "left")
 
-    df.write.mode("overwrite").parquet("/opt/airflow/data/silver/combined/")
+    combined_df.write.mode("overwrite").parquet("/opt/airflow/data/silver/combined/")
 
-    df = df.withColumn(
+    combined_df_csv = combined_df.withColumn(
             "data_date",
             F.lit(run_date)
         )
 
-    df.coalesce(1).write.mode("overwrite") \
+    combined_df_csv.coalesce(1).write.mode("overwrite") \
     .partitionBy("data_date") \
     .option("header", True) \
     .csv("/opt/airflow/data/silver/combined_csv/")

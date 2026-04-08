@@ -14,10 +14,7 @@ Goal is to generate a high level audit of event strram to assess data health und
 5. Generate top 5 airlines per event report.
 6. Save output as csv file.
 
-
 # Key challenges
-
-
 -> Memory Constraint -30MB: cannot use pandas or spark since this requires loading data to memory, but file is large.
 -> Schema Inconsistency
     The stream logs file contains inconsistent structure.
@@ -27,10 +24,7 @@ Goal is to generate a high level audit of event strram to assess data health und
 
 This will impact in breaking aggregations.
 
-
 # Strategies I used to mitigate Phase A:
-
-
 1. To address these contraints, I implemented streaming pipeline using jq, awk, sort
 2. 'jq' will help to transfrom difficult string parsing into a structured data format which makes easy to manipulate.
 3. Instead of processing all the data I selected only airline, price objects which helps code to save memory and time for processing.
@@ -41,8 +35,6 @@ This will impact in breaking aggregations.
 7. One of the challenges I faced while writing code is some of the prices are in object and some are in nrml key value, 
     for this I have used if else logic to fetch 'price.amount' if object else price.
 
-
-
 # AirLine Data Processing Pipeline (Phase B)
 
 # Overview:     
@@ -51,12 +43,10 @@ The system is reciving high volume of real time signals from airlines and intern
 The challenge we are facing is the disconnection between the airline provided status signals and user behaviors
 leading to ambiguity in customer side and potential misuse of system.
 
-
 # Overview:      
 Phase B evolves pipeline to a robust, scalable system using PySpark and Postgres.
 The pipeline will organise data into logical layers (stage, raw, gold) to ensure data quality, performance, business intelligence.
 Prioritizes high value customers during disruptions.
-
 
 # Challenges Identified:                 
 -> Schema Inconsistency
@@ -105,11 +95,11 @@ Pipeline is designed safe for retries.
     Each layer is independent
     Failures do not corrupt upstream data.
 # Future Enhancements                    
-->  Files are now places statically in a folder, it can be enhaced dynamic file detection and run pieline.
--> Handleing currency if currency is not given.
--> Provide business insights based on timstamp the latest booking id for the user.
--> Data quality monitoring
--> Resuable utility functions for common operations such as spark create session, standardize reads/writes and data transformations.
--> Loading all the layers data into a standard schema defined tables (PostgresSQL) which ensures downstream systems to query actionable insights.
--> Integrating Phase A logic as airflow task.
--> Identifying suspicious users who does recursive status updates.
+1. Files are now places statically in a folder, it can be enhaced dynamic file detection and run pieline.
+2. Handleing currency if currency is not given.
+3. Provide business insights based on timstamp the latest booking id for the user.
+4. Data quality monitoring
+5. Resuable utility functions for common operations such as spark create session, standardize reads/writes and data transformations.
+6. Loading all the layers data into a standard schema defined tables (PostgresSQL) which ensures downstream systems to query actionable insights.
+7. Integrating Phase A logic as airflow task.
+8. Identifying suspicious users who does recursive status updates.

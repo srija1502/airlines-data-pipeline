@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+
+# Airflow
+logs/
+*.log
+
+# Data (avoid pushing large files)
+data/
+outputs/
+
+# Env
+.env
+
+# OS
+.DS_Store
+
+# Spark
+metastore_db/
+spark-warehouse/

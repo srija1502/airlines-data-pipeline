@@ -54,7 +54,7 @@ def airline_pipeline():
 
     @task
     def multile_bookings_task():
-        multiple_bookings_same_time
+        multiple_bookings_same_time()
 
     # DAG FLOW
     logs = stream_logs_ingestion()

@@ -140,7 +140,10 @@ def multiple_bookings_same_time():
     result.write.mode("overwrite").parquet("/opt/airflow/data/gold/multiple_bookings/")
 
     # csv
-    result = result.withColumn("data_date", F.lit(run_date))
+    result = result.withColumn("data_date", F.lit(run_date)).withColumn(
+        "booking_ids",
+        F.concat_ws(",", F.col("booking_ids"))
+    )
 
     result.coalesce(1).write.mode("overwrite") \
         .partitionBy("data_date") \

@@ -37,7 +37,7 @@ def clean_logs():
     # Write CSV
     df = df.withColumn("data_date", F.lit(run_date))
 
-    df.coalesce(1).write.mode("append") \
+    df.coalesce(1).write.mode("overwrite") \
         .partitionBy("data_date") \
         .option("header", True) \
         .csv("/opt/airflow/data/silver/stream_logs_clean_csv/")

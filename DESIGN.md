@@ -45,11 +45,7 @@ This will impact in breaking aggregations.
 
 # AirLine Data Processing Pipeline (Phase B)
 
-
-
 # Overview:     
-
-
 The system is reciving high volume of real time signals from airlines and internal user actions.
 
 The challenge we are facing is the disconnection between the airline provided status signals and user behaviors
@@ -57,16 +53,12 @@ leading to ambiguity in customer side and potential misuse of system.
 
 
 # Overview:      
-
-
 Phase B evolves pipeline to a robust, scalable system using PySpark and Postgres.
 The pipeline will organise data into logical layers (stage, raw, gold) to ensure data quality, performance, business intelligence.
 Prioritizes high value customers during disruptions.
 
 
 # Challenges Identified:                 
-
-
 ** Schema Inconsistency
 The stream logs file contains inconsistent structure.
 price appears as both:
@@ -86,8 +78,6 @@ conflict between airline status and user actions.
 
 
 # Arcitecture, Strategies, insights generation
-
-
 ** Arcitecture
     Created a pipeline that follows multi layer data arcitecture:
     created 3layers-> Bronze layer(Raw Ingestion) > Silver layer (Clean and structured) > Gold layer(Aggregated metrics, conflict detection, suspicious behaviour) 
@@ -108,22 +98,14 @@ conflict between airline status and user actions.
                          Fraud attempt possibilty, mistakenly opted refund on flight delays
                          Same user booking multiple flights on the same time can also be implemented for business insight.
     Prioritizing customers tier level.
-
-
 # Idempotency & Resilience               
-
-
 Pipeline is designed safe for retries.
     Creates datadate folder and writes the files in new datadate every day it gets triggered.
     writes outputs using overwrite, so that is we run the pipeline on same it will overwrite the file avoiding data duplication.
     Each layer is independent
     Failures do not corrupt upstream data.
-
-
 # Future Enhancements                    
-
-
-** Files are now places statically in a folder, it can be enhaced dynamic file detection and run pieline.
+-> Files are now places statically in a folder, it can be enhaced dynamic file detection and run pieline.
 ** Handleing currency if currency is not given.
 ** Provide business insights based on timstamp the latest booking id for the user.
 ** Data quality monitoring

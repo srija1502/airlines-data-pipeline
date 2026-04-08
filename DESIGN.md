@@ -62,10 +62,11 @@ conflict between airline status and user actions.
 
 # Arcitecture, Strategies, insights generation
 **Arcitecture**
-Created a pipeline that follows **multi layer data arcitecture:**                                                                                                  Created 3layers->
-1. Bronze layer(**Raw Ingestion**) >
-2. Silver layer (**Clean and structured**) >
-3. Gold layer(**Aggregated metrics, conflict detection, suspicious behaviour**) 
+1. Created a pipeline that follows **multi layer data arcitecture:**
+2. Created 3layers->
+   1.  Bronze layer(**Raw Ingestion**) >
+   2.  Silver layer (**Clean and structured**) >
+   3.  Gold layer(**Aggregated metrics, conflict detection, suspicious behaviour**) 
 **Strategy**
 1. To maintain **schema consistency** and normalization
 2. Handled **inconsistent price format->  extract structured values**.
@@ -73,6 +74,7 @@ Created a pipeline that follows **multi layer data arcitecture:**               
 4. Data Validation & cleaning
 5. Replaced empty data with 'NULL' string which avoids data loss.
 6. Filtered incorrect timestamps and seperated to another file
+
 **Data transforming and business insight generation**
 1. Joined both bookings dataframe and log streams dataframe to know tier, region of the booking.
 2. Conflicts detected->
@@ -81,12 +83,13 @@ Created a pipeline that follows **multi layer data arcitecture:**               
    3. Fraud attempt possibilty, mistakenly opted refund on flight delays
    4. Same user booking multiple flights on the same time can also be implemented for business insight.
    5. Prioritizing customers tier level.
+
 # Idempotency & Resilience               
-Pipeline is designed safe for retries.
-    Creates **datadate folder** and writes the files in **both csv(readability) and parquet(easy processing)**. new datadate folder created every day it gets triggered.
-    writes **outputs using overwrite**, so that is we run the pipeline on **same date it will overwrite the file avoiding data duplication**.
-    Each layer is independent
-    Failures do not corrupt upstream data.
+1. Pipeline is designed safe for retries.
+    1. Creates **datadate folder** and writes the files in **both csv(readability) and parquet(easy processing)**. new datadate folder created every day it gets triggered.
+    2. writes **outputs using overwrite**, so that is we run the pipeline on **same date it will overwrite the file avoiding data duplication**.
+    3. Each layer is independent
+    4. Failures do not corrupt upstream data.
 # Future Enhancements                    
 1. Files are now places statically in a folder, it **can be enhanced dynamic file detection and run pieline**.
 2. Handeling currency if currency is not given.

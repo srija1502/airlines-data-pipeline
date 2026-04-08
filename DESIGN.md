@@ -18,8 +18,9 @@ Goal is to generate a high level audit of event strram to assess data health und
 1. Memory Constraint (30MB): cannot use pandas or spark since this requires loading data to memory, but file is large.
 2. Schema Inconsistency: The stream logs file contains **inconsistent structure**.
    price appears as both:
+
    ->  **floating value**
-   -> ** nested object {amount,currency}**
+   -> **nested object {amount,currency}**
 This will **impact in breaking aggregations.**
 
 # Strategies I used to mitigate Phase A:
@@ -41,7 +42,7 @@ The system is reciving high volume of real time signals from airlines and intern
 The challenge we are facing is the disconnection between the airline provided status signals and user behaviors
 leading to ambiguity in customer side and potential misuse of system.
 
-# Overview:      
+# Objective:      
 Phase B evolves pipeline to a robust, scalable system using PySpark and Postgres.
 The pipeline will **organise data into logical layers (stage, raw, gold)** to ensure **data quality, performance, business intelligence.**
 Prioritizes high value customers during disruptions.

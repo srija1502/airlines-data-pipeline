@@ -18,9 +18,8 @@ Goal is to generate a high level audit of event strram to assess data health und
 1. Memory Constraint (30MB): cannot use pandas or spark since this requires loading data to memory, but file is large.
 2. Schema Inconsistency: The stream logs file contains **inconsistent structure**.
    price appears as both:
-
-   ->  **floating value**
-   -> **nested object {amount,currency}**
+   1. **floating value**
+   2. **nested object {amount,currency}**
 This will **impact in breaking aggregations.**
 
 # Strategies I used to mitigate Phase A:
@@ -64,7 +63,10 @@ conflict between airline status and user actions.
 # Arcitecture, Strategies, insights generation
 **Arcitecture**
     Created a pipeline that follows **multi layer data arcitecture:**
-    created 3layers->  Bronze layer(**Raw Ingestion**) > Silver layer (**Clean and structured**) > Gold layer(**Aggregated metrics, conflict detection, suspicious behaviour**) 
+    created 3layers->  
+    1. Bronze layer(**Raw Ingestion**) > 
+    2. Silver layer (**Clean and structured**) > 
+    3. Gold layer(**Aggregated metrics, conflict detection, suspicious behaviour**) 
 **Strategy**
     To maintain **schema consistency** and normalization
         Handled **inconsistent price format->  extract structured values**.

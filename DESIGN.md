@@ -1,10 +1,7 @@
-################################################################################
-# AirLine Data Processing Pipeline (Phase A)                                   #
-################################################################################
 
-################################################################################
-# Objective                                                                    #
-################################################################################
+# AirLine Data Processing Pipeline (Phase A)
+
+# Objective
 
 Goal is to generate a high level audit of event strram to assess data health under strict system contraints.
 
@@ -45,9 +42,9 @@ This will impact in breaking aggregations.
     for this I have used if else logic to fetch 'price.amount' if object else price.
 
 
-################################################################################
+
 # AirLine Data Processing Pipeline (Phase B)                                   #
-################################################################################
+
 
 ###############################################################################
 # Overview:                                                                   #
@@ -58,17 +55,17 @@ The system is reciving high volume of real time signals from airlines and intern
 The challenge we are facing is the disconnection between the airline provided status signals and user behaviors
 leading to ambiguity in customer side and potential misuse of system.
 
-################################################################################
+
 # Overview:                                                                    #
-################################################################################
+
 
 Phase B evolves pipeline to a robust, scalable system using PySpark and Postgres.
 The pipeline will organise data into logical layers (stage, raw, gold) to ensure data quality, performance, business intelligence.
 Prioritizes high value customers during disruptions.
 
-################################################################################
+
 # Challenges Identified:                                                       #
-################################################################################
+
 
 ** Schema Inconsistency
 The stream logs file contains inconsistent structure.
@@ -87,9 +84,9 @@ Requires Validations to ensure trust in analytics.
 ** Behavioral Ambiguity
 conflict between airline status and user actions.
 
-################################################################################
+
 # Arcitecture, Strategies, insights generation                                 #
-################################################################################
+
 
 ** Arcitecture
     Created a pipeline that follows multi layer data arcitecture:
@@ -112,9 +109,9 @@ conflict between airline status and user actions.
                          Same user booking multiple flights on the same time can also be implemented for business insight.
     Prioritizing customers tier level.
 
-################################################################################
+
 # Idempotency & Resilience                                                     #
-################################################################################
+
 
 Pipeline is designed safe for retries.
     Creates datadate folder and writes the files in new datadate every day it gets triggered.
@@ -122,9 +119,9 @@ Pipeline is designed safe for retries.
     Each layer is independent
     Failures do not corrupt upstream data.
 
-################################################################################
+
 # Future Enhancements                                                          #
-################################################################################
+
 
 ** Files are now places statically in a folder, it can be enhaced dynamic file detection and run pieline.
 ** Handleing currency if currency is not given.

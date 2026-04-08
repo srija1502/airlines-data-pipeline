@@ -62,25 +62,25 @@ conflict between airline status and user actions.
 
 # Arcitecture, Strategies, insights generation
 **Arcitecture**
-    Created a pipeline that follows **multi layer data arcitecture:**
-    created 3layers->  
-    1. Bronze layer(**Raw Ingestion**) > 
-    2. Silver layer (**Clean and structured**) > 
-    3. Gold layer(**Aggregated metrics, conflict detection, suspicious behaviour**) 
+Created a pipeline that follows **multi layer data arcitecture:**                                                                                                  Created 3layers->
+1. Bronze layer(**Raw Ingestion**) >
+2. Silver layer (**Clean and structured**) >
+3. Gold layer(**Aggregated metrics, conflict detection, suspicious behaviour**) 
 **Strategy**
-    To maintain **schema consistency** and normalization
-        Handled **inconsistent price format->  extract structured values**.
-        **Regex parsing** for primitive values
-    Data Validation & cleaning
-        Replaced empty data with 'NULL' string which avoids data loss.
-        Filtered incorrect timestamps and seperated to another file
+1. To maintain **schema consistency** and normalization
+2. Handled **inconsistent price format->  extract structured values**.
+3. **Regex parsing** for primitive values
+4. Data Validation & cleaning
+5. Replaced empty data with 'NULL' string which avoids data loss.
+6. Filtered incorrect timestamps and seperated to another file
 **Data transforming and business insight generation**
-    Joined both bookings dataframe and log streams dataframe to know tier, region of the booking.
-    Conflicts detected->  User requesting REFUND while flight is ON_TIME
-                         Contradictory booking actions
-                         Fraud attempt possibilty, mistakenly opted refund on flight delays
-                         Same user booking multiple flights on the same time can also be implemented for business insight.
-    Prioritizing customers tier level.
+1. Joined both bookings dataframe and log streams dataframe to know tier, region of the booking.
+2. Conflicts detected->
+   1. User requesting REFUND while flight is ON_TIME
+   2. Contradictory booking actions
+   3. Fraud attempt possibilty, mistakenly opted refund on flight delays
+   4. Same user booking multiple flights on the same time can also be implemented for business insight.
+   5. Prioritizing customers tier level.
 # Idempotency & Resilience               
 Pipeline is designed safe for retries.
     Creates **datadate folder** and writes the files in **both csv(readability) and parquet(easy processing)**. new datadate folder created every day it gets triggered.

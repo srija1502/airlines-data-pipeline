@@ -13,20 +13,28 @@ def normalize_logs():
         StructField("amount", DoubleType(), True),
         StructField("currency", StringType(), True)
     ])
-
+    df = df.withColumn("price", F.col("price").cast("string"))
     df = df.withColumn(
         "price_struct",
         F.from_json("price", price_schema)
-    ).withColumn(
+    )
+
+    df = df.withColumn(
         "price_amount",
-        F.coalesce(
-            F.col("price_struct.amount"),
-            F.col("price").cast("double"),
-            F.regexp_replace("price", "[^0-9.]", "").cast("double")
+        F.when(
+            F.col("price_struct").isNotNull(),
+            F.col("price_struct.amount")
+        ).otherwise(
+            F.regexp_extract("price", r'(\d+\.\d+)', 1).cast("double")
         )
-    ).withColumn(
+    )
+
+    df = df.withColumn(
         "currency",
-        F.coalesce(F.col("price_struct.currency"), F.lit("USD"))
+        F.when(
+            F.col("price_struct").isNotNull(),
+            F.col("price_struct.currency")
+        ).otherwise(F.lit(""))
     ).drop("price_struct")
 
     df.write.mode("overwrite").parquet("/opt/airflow/data/silver/stream_logs_normalized/")

@@ -19,9 +19,3 @@ def logs_ingestion():
     .csv("/opt/airflow/data/bronze/stream_logs_csv/")
     spark.stop()
 
-def booking_ingestion():
-    spark = get_spark()
-    df = spark.read.parquet("/opt/airflow/data/raw/bookings_master.parquet")
-
-    df.write.mode("overwrite").parquet("/opt/airflow/data/bronze/bookings_master/")
-    spark.stop()

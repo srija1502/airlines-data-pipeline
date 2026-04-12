@@ -14,7 +14,7 @@ from src.gold import (
 
 @dag(
     start_date=datetime(2024, 1, 1),
-    schedule=None,
+    schedule="@daily",
     catchup=False,
     tags=["airline", "pipeline"]
 )

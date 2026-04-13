@@ -86,14 +86,16 @@ def high_value_customers():
     run_date = datetime.now().strftime("%Y%m%d")
     df = df.filter(F.col("booking_id") != "NULL")
 
-    result = df.groupBy("customer_name", "tier").agg(
+    result = df.groupBy("customer_name", "tier","airline").agg(
         F.sum("price_amount").alias("total_spent"),
         F.count("*").alias("events")
     ).withColumn(
         "priority_score",
-        F.when(F.col("tier") == "PLATINUM", 100).otherwise(50) + F.col("total_spent")
+        F.when(F.col("tier") == "PLATINUM", "P1")
+        .when(F.col("tier") == "GOLD", "P2")
+        .when(F.col("tier") == "SILVER", "P3")
+        .otherwise("P4")
     )
-
     result.write.mode("overwrite").parquet("/opt/airflow/data/gold/high_value/")
 
     result = result.withColumn(
@@ -144,7 +146,7 @@ def multiple_bookings_same_time():
         "booking_ids",
         F.concat_ws(",", F.col("booking_ids"))
     )
-
+    
     result.coalesce(1).write.mode("overwrite") \
         .partitionBy("data_date") \
         .option("header", True) \
